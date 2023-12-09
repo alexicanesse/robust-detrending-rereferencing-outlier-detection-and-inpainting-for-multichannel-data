@@ -1,0 +1,11 @@
+*.aux
+_minted*
+*.bcf
+*.log
+*.out
+*.xml
+*.toc
+*.upa
+*.upb
+.DS_Store
+*.xsim
