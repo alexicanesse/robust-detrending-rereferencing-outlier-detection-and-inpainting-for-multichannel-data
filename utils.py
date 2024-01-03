@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_signals(x, y_array, y_names=[], title="Plot of Signals", log_x=False, log_y=False, xlabel="X-axis", ylabel="Y-axis", save=False, filename="plot.png"):
+def plot_signals(x, y_array, y_lines=[], y_names=[], title="Plot of Signals", log_x=False, log_y=False, xlabel="X-axis", ylabel="Y-axis", save=False, filename="plot.png"):
     # Create a figure and axis
     fig, ax = plt.subplots()
 
@@ -20,6 +20,11 @@ def plot_signals(x, y_array, y_names=[], title="Plot of Signals", log_x=False, l
         else:
             label = f"Signal {i + 1}"
         ax.plot(x, signal, label=label)
+
+    # Add vertical lines
+    for y_line in y_lines:
+        ax.axvline(x=y_line, color='magenta', linestyle='--')
+
 
     # Set title
     ax.set_title(title)
@@ -106,3 +111,14 @@ def generate_noisy_polynomial(degree, noise_level, num_points):
     noisy_y_values = y_values + noise_level * np.random.randn(num_points)
 
     return x_values, noisy_y_values, coefficients
+
+def generate_random_numbers(n, range_start, range_end, min_distance):
+    numbers = []
+
+    for _ in range(n):
+        new_number = np.random.randint(range_start, range_end)
+        while any(abs(new_number - num) < min_distance for num in numbers):
+            new_number = np.random.randint(range_start, range_end)
+        numbers.append(new_number)
+
+    return numbers
