@@ -9,3 +9,4 @@ _minted*
 *.upb
 .DS_Store
 *.xsim
+__pycache__/
