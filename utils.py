@@ -43,9 +43,9 @@ def plot_signals(x, y_array, y_lines=[], y_names=[], title="Plot of Signals", lo
     # Display the plot
     plt.show()
 
-def plot_signals_side_by_side(x, y1, y2, y_names1=[], y_names2=[], title1="", title2="", log_x=False, log_y=False, xlabel="X-axis", ylabel="Y-axis", save=False, filename="plot.png"):
+def plot_signals_side_by_side(x, y1, y2, y_names1=[], y_names2=[], title1="", title2="", log_x=False, log_y=False, xlabel="X-axis", ylabel="Y-axis", save=False, filename="plot.png", sharey=True):
     # Create a figure with two subplots
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5), sharey=True)
 
     # Set log scale for x-axis if log_x is True
     if log_x:
