@@ -1,6 +1,25 @@
 \documentclass[11pt]{article}
 \usepackage{theme}
 \usepackage{shortcuts}
+\usepackage{minted}
+\usemintedstyle{emacs}
+
+
+\newenvironment{pseudocode}{
+    \VerbatimEnvironment
+    \begin{minted}[mathescape,
+        style=manny,
+        linenos,
+        numbersep=5pt,
+        gobble=2,
+        frame=lines,
+        escapeinside=||,
+        framesep=2mm,
+        rulecolor=magenta]{python}%
+}{
+    \end{minted}%
+}
+
 % Document parameters
 % Document title
 \title{Mini-Project (ML for Time Series) - MVA 2023/2024}
@@ -53,7 +72,7 @@ The Introduction section (indicative length : less than 1 page) should detail th
 
     \item Use of available source code or not, percentage of the source code that has been reused, etc.\\
     
-    The source code available is in matlab. This is a shitty language and releasing a paper with only a matlab implementation is equalivalent to not releasing source code. Furthermore, it was poorly written and unreadable without any damn documentation. We only looked at the code to get the details missing in the paper because the paper lacks details. (freaking learn to write dammit) 
+    The source code available is in matlab. This is a shitty language and releasing a paper with only a matlab implementation is equalivalent to not releasing source code. Furthermore, it was poorly written and unreadable without any damn documentation. We only looked at the code to get the details missing in the paper because the paper lacks details. (freaking learn to write dammit). AND FOR GOD'S SAKE \(d(t) \neq d\). Writting things like \(d(t)/std(d(t))\) makes you look like a five years old.
 
     \item Use of existing experiments or new experiments (e.g. test of the influence of parameter that was not conducted in the original article, application of the method on a novel task/data set etc.)\\
     
@@ -69,6 +88,68 @@ The Method section (indicative length : 1 to 2 pages) should describe the mathem
 
 A subsection for each method. Short paragraph to introduce it and then pseudo code + one small figure as exemple.
 We each do the methods we implemented.
+
+\subsection{Robust detrending}
+
+\begin{pseudocode}
+detrending(signal):
+    weights = [1, 1, |\(\dots\)|, 1] # weights for outlier detection (0 means outlier)
+    iterrate |\(n_\text{iter}\)| times:
+        projected_signal = fit_to_basis_using_weights(signal, weights)
+        error_on_projection = abs(signal - projected_signal)
+        for t in len(signal):
+            if error_on_projection[t]/std(error_on_projection) > threshold:
+                weights[t] = 0
+            else:
+                weights[t] = 1
+    return signal - fitted_signal # detrended signal
+\end{pseudocode}
+
+\subsection{Inpainting}
+
+
+\subsection{Outlier detection}
+
+
+\subsection{Robust rereferencing}
+
+\begin{pseudocode}
+rereferencing(signal):
+    weights = 1 - outlier_detection(signal) # 1 : valid data / 0 : outlier
+    weighted_mean = mean_using_weights(signal, weights)
+    return signal - weighted_mean
+\end{pseudocode}
+
+\subsection{Step removal}
+
+\begin{pseudocode}
+# Recursively look for steps in the signal
+step_detection(signal, depth)
+    |\(\forall (t,T)\)| M[t][T] = mean(x[t:T+1])
+    |\(\forall (t,T)\)| V[t][T] = |\(\sum_{i=t}^T (x_i - M_t^T)^2\)|
+    
+    t0 = argmin(V[1][t] + V[t][T], t) # most likely position to be a step
+    if not(is_step(signal, t0)): # Check if t0 is indeed the position of a step
+        return [] # no steps
+    
+    # Check for steps on both sides of t0
+    steps_left = step_detection(signal[:t0], depth - 1)
+    steps_right = t0 + step_detection(signal[t0:], depth - 1) # + t0 because signal si shifted
+
+    return concatenate(steps_left, [t0], steps_right)
+
+step_removal(signal, depth):
+    steps = step_detection(signal, depth)
+
+    for step in steps:
+        signal[steps:] -= difference_mean_before_and_after_step(signal, step)
+
+    return signal # Without steps
+
+\end{pseudocode}
+
+\subsection{Ringing removal}
+
 
 \section{Data}
 The Data section (indicative length : 1 page) should provide a deep analysis of the data used for experiment. In particular, we are interested here in your capacity to provide relevant and thoughtful feedbacks on the data and to demonstrate that you master some "data diagnosis" tools that have been dealt with in the lectures/tutorials.\\
