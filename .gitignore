@@ -7,6 +7,9 @@ _minted*
 *.toc
 *.upa
 *.upb
+*.fls
+*.fdb_latexmk
+*.gz
 .DS_Store
 *.xsim
 __pycache__/
