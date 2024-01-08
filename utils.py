@@ -43,9 +43,9 @@ def plot_signals(x, y_array, y_lines=[], y_names=[], title="Plot of Signals", lo
     # Display the plot
     plt.show()
 
-def plot_signals_side_by_side(x, y1, y2, y_names1=[], y_names2=[], title1="", title2="", log_x=False, log_y=False, xlabel="X-axis", ylabel="Y-axis", save=False, filename="plot.png", sharey=True):
+def plot_signals_side_by_side(x, y1, y2, y_names1=[], y_names2=[], title1="", title2="", log_x=False, log_y=False, xlabel="X-axis", ylabel="Y-axis", save=False, filename="plot.png", sharey=True, alpha1=None, alpha2=None):
     # Create a figure with two subplots
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5), sharey=True)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 5), sharey=sharey)
 
     # Set log scale for x-axis if log_x is True
     if log_x:
@@ -57,13 +57,19 @@ def plot_signals_side_by_side(x, y1, y2, y_names1=[], y_names2=[], title1="", ti
         ax1.set_yscale("log")
         ax2.set_yscale("log")
 
+    # Init alpha values if not set
+    if alpha1 is None:
+        alpha1 = np.ones(len(y1))
+    if alpha2 is None:
+        alpha2 = np.ones(len(y2))
+
     # Plot each signal in the array for the first graph
     for i, signal in enumerate(y1):
         if y_names1:
             label = y_names1[i]
         else:
             label = f"Signal {i + 1}"
-        ax1.plot(x, signal, label=label)
+        ax1.plot(x, signal, label=label, alpha=alpha1[i])
 
     # Plot each signal in the array for the second graph
     for i, signal in enumerate(y2):
@@ -71,7 +77,7 @@ def plot_signals_side_by_side(x, y1, y2, y_names1=[], y_names2=[], title1="", ti
             label = y_names2[i]
         else:
             label = f"Signal {i + 1}"
-        ax2.plot(x, signal, label=label)
+        ax2.plot(x, signal, label=label, alpha=alpha2[i])
 
     # Add labels
     ax1.set_xlabel(xlabel + (" (log scale)" if log_x else ""))
