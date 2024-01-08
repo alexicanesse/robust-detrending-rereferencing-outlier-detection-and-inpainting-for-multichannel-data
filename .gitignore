@@ -10,3 +10,5 @@ _minted*
 .DS_Store
 *.xsim
 __pycache__/
+data/phan*
+6509115
