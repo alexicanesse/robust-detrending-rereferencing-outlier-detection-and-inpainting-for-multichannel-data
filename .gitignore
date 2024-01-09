@@ -14,4 +14,5 @@ _minted*
 *.xsim
 __pycache__/
 data/phan*
+data/MEG.npy
 6509115
