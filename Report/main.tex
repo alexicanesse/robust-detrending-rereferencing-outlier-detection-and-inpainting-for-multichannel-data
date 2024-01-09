@@ -114,37 +114,57 @@ Motion of the electrodes or leads can create temporally-localized glitches. Give
 
 
 \begin{pseudocode}
-inpaint(x, w, keep_valid=True):
-	N = Number of channels
-	new_x = x.copy()
-	for n in range(N):
-		Partition the time axis into |\(K\)| subsets
-		for k in range(K):
-			T_k = partition == k
-			Tprime_k = np.logical_and(w[:, n], T_k) # Timestamps we use to estimate the projection
-			Tinpaint = np.logical_and(~w[:, n], T_k) # Timestamps to reconstruct
-			if not keep_valid:
-				Tinpaint = T_k
-			
-			if Tinpaint.any():
-				xother_Tp = x[Tprime_k, :][:, pattern[k]]
-				ones = np.ones([xother_Tp.shape[0], 1], dtype=np.float32)
-				xother_Tp = np.concatenate([xother_Tp, ones], axis=1)
-				
-				xother_Ti = x[Tinpaint, :][:, pattern[k]]
-				ones =  np.ones([xother_Ti.shape[0], 1], dtype=np.float32)
-				xother_Ti = np.concatenate([xother_Ti, ones], axis=1)
-				
-				# Estimate the coefficients and reconstuct the data
-				coefs = np.linalg.lstsq(xother_Tp, x[Tprime_k, n], rcond=None)[0]
-				new_x[Tinpaint, n] = xother_Ti @ coefs
+inpaint(x, w):
+    N = Number of channels
+    new_x = x.copy()
+    for n in range(N):
+        Partition the time axis into |\(K\)| subsets
+        for k in range(K):
+            T_k = partition == k
+            Tprime_k = np.logical_and(w[:, n], T_k) # Timestamps we use to estimate the projection
+            Tinpaint = np.logical_and(~w[:, n], T_k) # Timestamps to reconstruct
+            if not keep_valid:
+                Tinpaint = T_k
 
-	return new_x
+            if Tinpaint.any():
+                xother_Tp = x[Tprime_k, :][:, pattern[k]]
+                ones = np.ones([xother_Tp.shape[0], 1], dtype=np.float32)
+                xother_Tp = np.concatenate([xother_Tp, ones], axis=1)
+
+                xother_Ti = x[Tinpaint, :][:, pattern[k]]
+                ones =  np.ones([xother_Ti.shape[0], 1], dtype=np.float32)
+                xother_Ti = np.concatenate([xother_Ti, ones], axis=1)
+
+                # Estimate the coefficients and reconstuct the data
+                coefs = np.linalg.lstsq(xother_Tp, x[Tprime_k, n], rcond=None)[0]
+                new_x[Tinpaint, n] = xother_Ti @ coefs
+
+    return new_x
 \end{pseudocode}
-
 
 \subsection{Outlier detection}
 
+The inpainting algorithm need the locations of glitches. This is what the outlier detection algorihm computes. It uses the inpainting algorithm multiple times and flag as outliers the poorly reconstructed values for the next iteration.
+
+\begin{pseudocode}
+outlier_detection(x, thres=2., maxiter=20):
+
+    w = ones_like(x) # Initially assume there are no outliers
+
+    for it in range(maxiter):
+        # Try to reconstruct the data using the inpainting algorithm
+        xbar = inpaint(x, w, keep_valid=False)
+
+        # Flag high reconstruction errors as outliers
+        d = np.abs(x - xbar)
+        new_w = ~(d > thres * d.std(axis=0, keepdims=True))
+        
+        # Early stopping if the algorithm has converged
+        if (w == new_w).all():
+            return w
+        w = new_w
+    return w
+\end{pseudocode}
 
 \subsection{Robust rereferencing}
 
