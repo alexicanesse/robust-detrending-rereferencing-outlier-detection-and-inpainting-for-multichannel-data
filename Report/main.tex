@@ -10,7 +10,7 @@
 \newenvironment{pseudocode}{
     \VerbatimEnvironment
     \begin{minted}[mathescape,
-        style=manny,
+        %style=manny,
         linenos,
         numbersep=5pt,
         gobble=2,
@@ -109,6 +109,38 @@ detrending(signal):
 \end{pseudocode}
 
 \subsection{Inpainting}
+
+Motion of the electrodes or leads can create temporally-localized glitches. Given the list of glitches for each channel, one could try to reconstruct the signal at these timesteps to remove these glitches. This process is called \emph{inpainting}. Using a signal model where there is linear redundancy accross channels, the authors formulate an inpainting algorithm that first estimate the linear relationship between channels and use it to reconstruct the signal on timesteps affected by glitches.
+
+
+\begin{pseudocode}
+inpaint(x, w, keep_valid=True):
+	N = Number of channels
+	new_x = x.copy()
+	for n in range(N):
+		Partition the time axis into |\(K\)| subsets
+		for k in range(K):
+			T_k = partition == k
+			Tprime_k = np.logical_and(w[:, n], T_k) # Timestamps we use to estimate the projection
+			Tinpaint = np.logical_and(~w[:, n], T_k) # Timestamps to reconstruct
+			if not keep_valid:
+				Tinpaint = T_k
+			
+			if Tinpaint.any():
+				xother_Tp = x[Tprime_k, :][:, pattern[k]]
+				ones = np.ones([xother_Tp.shape[0], 1], dtype=np.float32)
+				xother_Tp = np.concatenate([xother_Tp, ones], axis=1)
+				
+				xother_Ti = x[Tinpaint, :][:, pattern[k]]
+				ones =  np.ones([xother_Ti.shape[0], 1], dtype=np.float32)
+				xother_Ti = np.concatenate([xother_Ti, ones], axis=1)
+				
+				# Estimate the coefficients and reconstuct the data
+				coefs = np.linalg.lstsq(xother_Tp, x[Tprime_k, n], rcond=None)[0]
+				new_x[Tinpaint, n] = xother_Ti @ coefs
+
+	return new_x
+\end{pseudocode}
 
 
 \subsection{Outlier detection}
