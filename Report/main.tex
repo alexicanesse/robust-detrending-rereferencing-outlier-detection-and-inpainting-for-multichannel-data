@@ -133,21 +133,11 @@ The inpainting algorithm need the locations of glitches. This is what the outlie
 
 \begin{pseudocode}
 outlier_detection(x, thres=2., maxiter=20):
-
     w = ones_like(x) # Initially assume there are no outliers
-
     for it in range(maxiter):
-        # Try to reconstruct the data using the inpainting algorithm
-        xbar = inpaint(x, w, keep_valid=False)
-
-        # Flag high reconstruction errors as outliers
+        xbar = inpaint(x, w) # Try to reconstruct the data
         d = np.abs(x - xbar)
-        new_w = ~(d > thres * d.std(axis=0, keepdims=True))
-        
-        # Early stopping if the algorithm has converged
-        if (w == new_w).all():
-            return w
-        w = new_w
+        w = d < thres * d.std() # Flag high reconstruction errors as outliers
     return w
 \end{pseudocode}
 
@@ -193,6 +183,17 @@ step_removal(signal, depth):
 \end{pseudocode}
 
 \subsection{Ringing removal}
+
+Ringing artefacts are caused by the antialiasing filter at the MEG steps. The authors suggest to use a small portion of the signal after each step to estimate the effect of the antialiasing filter and cancel it, which removes ringing artefacts.
+
+\begin{pseudocode}
+ringing_removal(x, step_list):
+    for n in range(number of channels):
+        for step in step_list[n]:
+            Estimate filter parameters on x[step : step + 100, n]
+            imp_res = impulse response of the filter
+            x[step : step+100, n] -= imp_res
+\end{pseudocode}
 
 
 \section{Data}
