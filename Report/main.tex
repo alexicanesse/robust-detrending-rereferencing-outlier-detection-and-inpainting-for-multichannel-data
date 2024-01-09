@@ -35,56 +35,25 @@ Alexi Canesse \email{mailto:alexi.canesse@ens-lyon.fr} % student 2
 \begin{document}
 \maketitle
 
-\paragraph{What is expected for these mini-projects?}
-The goal of the exercise is to read (and understand) a research article, implement it (or find an implementation), test it on real data and comment on the results obtained.
-Depending on the articles, the task will not always be the same: some articles are more theoretical or complex, others are in the direct line of the course, etc... It is therefore important to balance the exercise according to the article. For example, if you have reused an existing implementation, it is obvious that you will have to develop in a more detailed way the analysis of the results, the influence of the parameters etc... Do not hesitate to contact us by email if you wish to be guided.
-
-\paragraph{The report}
- The report must be at most FIVE pages and use this template (excluding references). If needed, additional images and tables can be put in Appendix, but must be discussed in the main document. The report must contain a precise description of the work done, a description of the method, and the results of your tests. Please do not include source code! The report must clearly show the elements that you have done yourself and those that you have reused only, as well as the distribution of tasks within the team (see detailed plan below.)
- 
- \paragraph{The source code}
-In addition to this report, you will have to send us a Python notebook allowing to launch the code and to test it on data. For the data, you can find it on standard sites like Kaggle, or the site https://timeseriesclassification.com/ which contains a lot of signals!
-
-
-\paragraph{The oral presentations}
-They will last 10 minutes followed by 5 minutes of questions. The plan of the defense is the same as the one of the report: presentation of the work done, description of the method and analysis of the results.
-
-
-\paragraph{Deadlines}
-Two sessions will be available :
-\begin{itemize}
- \item \textbf{Session 1}
- \begin{itemize}
-  \item Deadline for report: December 18th (23:59)
-  \item Oral presentations: December 20th and 22th (precise times TBA)
- \end{itemize}
-\item \textbf{Session 2}
- \begin{itemize}
-  \item Deadline for report: January 9th (23:59)
-  \item Oral presentations: January, 11th and 12th (precise times TBA)
- \end{itemize}
-\end{itemize}
-
 \section{Introduction and contributions}
 
-The Introduction section (indicative length : less than 1 page) should detail the scientific context of the article you chose, as well as the task that you want to solve (especially if you apply it on novel data). \textbf{The last paragraph of the introduction must contain the following information}:
-\begin{itemize}
-    \item Repartition of work between the two students\\
-    
-    Esteban : Inpainting, outlier detection and ringing removal.\\
-    Alexi : Detrending, rereferencing, step removal.
+The article we studied~\cite{DECHEVEIGNE2018} introduce methods to preprocess electroencephalography (EEG) and magnetoencephalography (MEG) recordings. This type of data is really sensible and prone to artefacts that theses methods try to remove. The authors decided to publish all of their algorithms together because they are similar and form together, a whole pipeline.\\
 
-    \item Use of available source code or not, percentage of the source code that has been reused, etc.\\
-    
-    The source code available is in matlab. This is a shitty language and releasing a paper with only a matlab implementation is equalivalent to not releasing source code. Furthermore, it was poorly written and unreadable without any damn documentation. We only looked at the code to get the details missing in the paper because the paper lacks details. (freaking learn to write dammit). AND FOR GOD'S SAKE \(d(t) \neq d\). Writting things like \(d(t)/std(d(t))\) makes you look like a five years old.
+The most obvious artefact appears in MEG data: steps/jump. They appear because the measurement of magnetic flux involves a feedback loop which can, when the flux varies too quickly, lose lock to the signal which creates a jump of fixed amplitude. Those jumps are followed by another type of artefact: ringing which happens because of the antialiasing hardware filter. They proposed algorithms to remove both of these artefacts. They also introduced algorithms for outliers detection and inpainting (removal of outliers/interpolation of missing data) that are less specific to MEG and EEG data. They also have an algorithm for robust detrending (not sensible to outliers) and robust rereferencing. \\
 
-    \item Use of existing experiments or new experiments (e.g. test of the influence of parameter that was not conducted in the original article, application of the method on a novel task/data set etc.)\\
-    
-    TODO
-    \item Improvement on the original method (e.g. new pre/post processing steps, grid search for optimal parameters etc.)\\
-    
-    TODO
-\end{itemize}
+\begin{figure}
+    \centering
+    \includegraphics[width=.25\textwidth]{figures/steps_exemple}
+    \hfill
+    \includegraphics[width=.25\textwidth]{figures/trend_exemple}
+    \hfill
+    \includegraphics[width=.25\textwidth]{figures/ringing_exemple.png}
+    \caption{Exemple of elements that the algorithms are here to remove. MEG steps on the left, trend on the middle and ringing on the right.}
+\end{figure}
+
+We implemented all of these algorithms in python. There is an existing implementation. However this implementation is in matlab so we did not use it. We also consider that \textbf{releasing code only in matlab is bad for reproducible science} and should not be considered as a proper release. We therefore did not used an existing implementation and took time to read this matlab code only to understand part of the algorithms that were not clear in the article (for instance notations such as \(d(t)/\text{STD}(d(t))\) is not only questionnable, it creates doubts about what the object really are and only looking at the implementation made it clear.).\\
+
+Both students implemented some of the algorithms. Esteban implemented painting, outlier detection and ringing removal. Alexi implemented detrending, rereferencing, step removal. The data has been gathered and exploited as a combined efforts. The same goes for the experiments. This report has been written by both students with an equal repartition.\\
 
 \section{Method}
 
@@ -161,7 +130,7 @@ step_removal(signal, depth):
 \section{Data}
 MEG and EEG data are medical recordings which make them a scare ressource. They should also be shared with great care. We used data from~\cite{Litvak2016}, the same data as the one used in the original article. The protocol used to record these MEG signals are described in ~\cite{oswal2016analysis}. The recordings we used are from ``phantom090715\_BrainampDBS\_20150709\_07.ds'' because this dataset is described as being the most realistic.\\
 
-The data is sampled at 2,400Hz. Each recording is 4 minutes long and contains 303 channels. The data contains artefacts such trends, steps, ringing and outliers that are inherent to MEG recordings. Those have been presented in introduction.\\
+The data is sampled at 2,400Hz. Each recording is 4 minutes long and contains 303 channels. The data contains artefacts such trends, steps, ringing and outliers that are inherent to MEG recordings. Those have been presented in introduction. The the steps fixed amplitude of \(3.5.10^{-5}\) fT. The antialiasing filter is a low-pass filter which cuts off of 600 Hz resulting in a ringing time of 4.8ms.\\
 
 We did not pre-process our data as the algorithms we use are the main steps of pre-processing. Only denoising is not presented in the methods here. We did not applied any denoising because denoising should be applied \textit{after} the application of the methods presented in the article. Indeed, artefacts could greatly impact denoising. Furthermore, MEG data is complicated and we do not understand the field enough to even know when we would remove actual data. The authors of the recording implemented two sensor-level denoising methods. They first used S3P-a technique based on eigenvalue decomposition of the complex cross-spectral density matrix (this technique is similar to SSA studied in the lectures); the second is pTSSS which defines subspaces using singular value decomposition. These successfully removed artefacts related to the stimulation and low level frequencies. However, this did not improved their ability to perform the task of their experiment.\\
 
