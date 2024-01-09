@@ -88,12 +88,11 @@ The Introduction section (indicative length : less than 1 page) should detail th
 
 \section{Method}
 
-The Method section (indicative length : 1 to 2 pages) should describe the mathematical aspects of the method in a summarized manner. Only the main steps that are useful for understanding should be highlighted. If relevant, some details on implementation can be provided (but only marginally).\\
-
-A subsection for each method. Short paragraph to introduce it and then pseudo code + one small figure as exemple.
-We each do the methods we implemented.
+The following section presents the algorithms proposed by the paper and gives pseudo-code for each algorithm.
 
 \subsection{Robust detrending}
+
+The main issue with usual detrending methods is that they are sensible to artefacts that are common in EEG and MEG data. They therefore present an algorithm that takes this into account. We fit a trend to the data and where the residuals are over a threshold, we flag the point as an outlier and do not take it into account to fit a the basis anymore. This is iterated a few times and gives great results. 
 
 \begin{pseudocode}
 detrending(signal):
@@ -117,6 +116,8 @@ detrending(signal):
 
 \subsection{Robust rereferencing}
 
+Rereferencing is subtracting the average over all channels to the data. It is used because EEG measures are potentials therefore relative. When applying rereferencing, one corrupted channel can then affect every channels. To prevent this, the mean computed is computed only on values that are not outliers according to the outlier detection algorithm. Another solution is to use the output of the inpainting algorithm instead of the raw data.
+
 \begin{pseudocode}
 rereferencing(signal):
     weights = 1 - outlier_detection(signal) # 1 : valid data / 0 : outlier
@@ -125,6 +126,8 @@ rereferencing(signal):
 \end{pseudocode}
 
 \subsection{Step removal}
+
+The algorithm has two parts, first, it detects steps and then it removes them. In order to detect steps, the algorithm look at the empirical variance from the beginning and from the end and recursively look for the next step until it can't find any or the max depth is reached. We suspect that this part of the algorithm could be improved using change point detection methods we have seen in the fifth lab. However, we did not compared them because the proposed solution already worked more than well enough.
 
 \begin{pseudocode}
 # Recursively look for steps in the signal
