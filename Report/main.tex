@@ -10,7 +10,7 @@
 \newenvironment{pseudocode}{
     \VerbatimEnvironment
     \begin{minted}[mathescape,
-        style=manny,
+        %style=manny,
         linenos,
         numbersep=5pt,
         gobble=2,
@@ -79,9 +79,36 @@ detrending(signal):
 
 \subsection{Inpainting}
 
+Motion of the electrodes or leads can create temporally-localized glitches. Given the list of glitches for each channel, one could try to reconstruct the signal at these timesteps to remove these glitches. This process is called \emph{inpainting}. Using a signal model where there is linear redundancy accross channels, the authors formulate an inpainting algorithm that first estimate the linear relationship between channels and use it to reconstruct the signal on timesteps affected by glitches.
+
+
+\begin{pseudocode}
+inpaint(x, w):
+    N = Number of channels
+    for n in range(N):
+        Partition the time axis into |\(K\)| subsets based on validity of channels
+        for k in range(K):
+            T_k = timesteps in subset k
+            Tprime = subset of T_k where ch. n is valid
+            Tinpaint = subset of T_k where ch. n has to be reconstructed
+            Estimate the linear relationship between ch. n and valid ch. on Tprime
+            Use the relationship to reconstruct ch. n on Tinpaint
+    return new_x
+\end{pseudocode}
 
 \subsection{Outlier detection}
 
+The inpainting algorithm need the locations of glitches. This is what the outlier detection algorihm computes. It uses the inpainting algorithm multiple times and flag as outliers the poorly reconstructed values for the next iteration.
+
+\begin{pseudocode}
+outlier_detection(x, thres=2., maxiter=20):
+    w = ones_like(x) # Initially assume there are no outliers
+    for it in range(maxiter):
+        xbar = inpaint(x, w) # Try to reconstruct the data
+        d = np.abs(x - xbar)
+        w = d < thres * d.std() # Flag high reconstruction errors as outliers
+    return w
+\end{pseudocode}
 
 \subsection{Robust rereferencing}
 
@@ -126,6 +153,17 @@ step_removal(signal, depth):
 
 \subsection{Ringing removal}
 
+Ringing artefacts are caused by the antialiasing filter at the MEG steps. The authors suggest to use a small portion of the signal after each step to estimate the effect of the antialiasing filter and cancel it, which removes ringing artefacts.
+
+\begin{pseudocode}
+ringing_removal(x, step_list):
+    for n in range(number of channels):
+        for step in step_list[n]:
+            Estimate filter parameters on x[step : step + 100, n]
+            imp_res = impulse response of the filter
+            x[step : step+100, n] -= imp_res
+\end{pseudocode}
+
 
 \section{Data}
 MEG and EEG data are medical recordings which make them a scare ressource. They should also be shared with great care. We used data from~\cite{Litvak2016}, the same data as the one used in the original article. The protocol used to record these MEG signals are described in ~\cite{oswal2016analysis}. The recordings we used are from ``phantom090715\_BrainampDBS\_20150709\_07.ds'' because this dataset is described as being the most realistic.\\
@@ -139,7 +177,14 @@ We also manually generated some signals using the sum of a polynomial and white 
 \section{Results}
 The Result section (indicative length : 1 to 2 pages) should display numerical simulations on real data. If you re-used some existing implementations, it is expected that this section develops new experiments that were not present in the original article. Results should be discussed not only based on quantitative scores but also on qualitative aspects. In particular (especially if your article focuses on black box methods), please provide some feedbacks whether the method was adapted to the data or not and whether the hypothesis behind the approach you used were validated or not.
 
-TODO.
+We applied the following preprocessing pipeline to a subset of 16 channels of the raw MEG data.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=12cm]{recons.png}\\
+    \includegraphics[width=12cm]{recons_clean.png}
+    \caption{Top: Raw MEG and its reconstruction. Bottom: Cleaned MEG with its reconstruction}
+\end{figure}
 
 \newpage
 
