@@ -178,6 +178,16 @@ We also manually generated some signals using the sum of a polynomial and white 
 
 We applied the following preprocessing pipeline to a subset of 16 channels of the raw MEG data (approx $9'600'000$ samples). 1: Remove steps, 2: Remove ringing artefacts, 3: Robust detrend, 4: Detect outliers, 5: Inpainting, 6: Robust rereference. We call the resulting data "cleaned MEG".
 
+\begin{figure}
+    \centering
+    \includegraphics[width=8cm]{data_raw.png}%
+    \includegraphics[width=8cm]{data_clean.png}
+    \caption{Left: Raw MEG data. Right: Cleaned MEG data}
+    \label{fig:data}
+\end{figure}
+
+We can see that steps are efficiently removed fig. \ref{fig:data}. Visible trend on raw MEG data in channel 9 is efficiently removed after the pipeline. Other artifacts such as ringing are more not visible on a such plot.
+
 Then, we tried to reconstruct the cleaned MEG data using a convolutional dictionary learning (CDL) algorithm using 5 atoms of length 20. As baseline, we reconstruct the raw MEG data with CDL too and compare the reconstruction error fig. \ref{fig:recons}.
 
 \begin{figure}
