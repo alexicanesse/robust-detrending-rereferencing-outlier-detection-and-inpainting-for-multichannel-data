@@ -2,6 +2,8 @@
 \usepackage{theme}
 \usepackage{shortcuts}
 \usepackage{minted}
+\usepackage[citestyle=alphabetic,bibstyle=alphabetic]{biblatex}
+\addbibresource{main.bib}
 \usemintedstyle{emacs}
 
 
@@ -20,12 +22,14 @@
     \end{minted}%
 }
 
+
+
 % Document parameters
 % Document title
 \title{Mini-Project (ML for Time Series) - MVA 2023/2024}
 \author{
-Firstname Lastname \email{youremail1@mail.com} \\ % student 1
-Firstname Lastname \email{youremail2@mail.com} % student 2
+Esteban Christiann \email{mailto:esteban.christiann@ens-paris-saclay.fr} \\ % student 1
+Alexi Canesse \email{mailto:alexi.canesse@ens-lyon.fr} % student 2
 }
 
 \begin{document}
@@ -152,13 +156,22 @@ step_removal(signal, depth):
 
 
 \section{Data}
-The Data section (indicative length : 1 page) should provide a deep analysis of the data used for experiment. In particular, we are interested here in your capacity to provide relevant and thoughtful feedbacks on the data and to demonstrate that you master some "data diagnosis" tools that have been dealt with in the lectures/tutorials.\\
+MEG and EEG data are medical recordings which make them a scare ressource. They should also be shared with great care. We used data from~\cite{Litvak2016}, the same data as the one used in the original article. The protocol used to record these MEG signals are described in ~\cite{oswal2016analysis}. The recordings we used are from ``phantom090715\_BrainampDBS\_20150709\_07.ds'' because this dataset is described as being the most realistic.\\
 
-TODO. At least use data from the original paper
+The data is sampled at 2,400Hz. Each recording is 4 minutes long and contains 303 channels. Channels are correlated.\\
+
+We did not pre-process our data as the algorithms we use are the main steps of pre-processing. Only denoising is not presented in the methods here. We did not applied any denoising because denoising should be applied \textit{after} the application of the methods presented in the article. Indeed, artefacts could greatly impact denoising. Furthermore, MEG data is complicated and we do not understand the field enough to even know when we would remove actual data. The authors of the recording implemented two sensor-level denoising methods. They first used S3P-a technique based on eigenvalue decomposition of the complex cross-spectral density matrix (this technique is similar to SSA studied in the lectures); the second is pTSSS which defines subspaces using singular value decomposition. These successfully removed artefacts related to the stimulation and low level frequencies. However, this did not improved their ability to perform the task of their experiment.\\
+
+We also manually generated some signals using the sum of a polynomial and white noise on top of which we added an artificial glitch. This was meant to be easy to use and interpret data.\\ 
 
 \section{Results}
-The Result section (indicative length : 1 to 2 pages) should display numerical simulations on real data. If you re-used some existing implementations, it is expected that this section develops new experiments that were not present in the original article. Results should be discussed not only based on quantative scores but also on qualitative aspects. In particular (especially if your article focuses on black box methods), please provide some feedbacks whether the method was adapted to the data or not and whether the hypothesis behind the approach you used were validated or not.
+The Result section (indicative length : 1 to 2 pages) should display numerical simulations on real data. If you re-used some existing implementations, it is expected that this section develops new experiments that were not present in the original article. Results should be discussed not only based on quantitative scores but also on qualitative aspects. In particular (especially if your article focuses on black box methods), please provide some feedbacks whether the method was adapted to the data or not and whether the hypothesis behind the approach you used were validated or not.
 
 TODO.
+
+\newpage
+
+\printbibliography[heading=bibintoc]
+
 
 \end{document}

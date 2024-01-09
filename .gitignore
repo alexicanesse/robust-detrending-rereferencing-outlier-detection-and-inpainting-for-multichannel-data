@@ -15,3 +15,5 @@ _minted*
 __pycache__/
 data/phan*
 6509115
+*.blg
+*.bbl
