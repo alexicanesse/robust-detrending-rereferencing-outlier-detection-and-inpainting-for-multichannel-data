@@ -1,0 +1,162 @@
+\documentclass[10pt,serif]{beamer}
+\input{preambule_pres.tex}
+
+\usepackage{subcaption}
+
+\def\bibfont{\footnotesize}
+% \renewcommand\bibliographytypesize{\small}
+{\footnotesize
+\bibliography{./report.bib}}
+\usepackage{wrapfig}
+\usepackage{ragged2e}
+\usepackage{tabularx}
+\usepackage{tkz-base}
+\usepackage{tikz}
+\usepackage{csquotes}
+\usepackage{pgfplots}
+\usepackage{datetime2}
+\usepackage{adjustbox}
+\usepackage{cleveref}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{multimedia}
+
+
+
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{s}{>{\hsize=.3\hsize\linewidth=\hsize}C}
+\newcolumntype{D}{>{\hsize=.4\hsize\linewidth=\hsize}C} %Double width column
+
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Table of content}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+\uselanguage{English}
+\languagepath{English}
+
+\pgfplotsset{compat=1.17}
+\renewcommand{\today}{\number\day\textsuperscript{\scriptsize\text{th}} \DTMenglishmonthname{\month} \number\year}
+% \useoutertheme{smoothbars}
+
+% \setbeamertemplate{title page}[default][colsep=-0bp,rounded=false]
+% \setbeamertemplate{frametitle}[default][colsep=-4bp,rounded=false,shadow=false]
+% \setbeamertemplate{blocks}[rounded][shadow=false]
+% \setbeamertemplate{headline}[shadow=false]
+% \setbeamertemplate{subsection in head}[shadow=false]
+% \setbeamertemplate{section in head}[shadow=false]
+% \setbeamertemplate{beamercolorbox}[shadow=false]
+
+\makeatletter
+\def\@makefnmark{}
+\makeatletter
+
+% \setbeamertemplate{footnote}{%
+%   \parindent 1em\noindent
+%   \raggedright
+%   \insertfootnotetext\par
+% }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \title{
+%   Arbitrages statistiques dans l'apprentissage automatique confidentiel
+% }
+% \author{{\sc Alexi Canesse}\\ Candidat 557}
+% \date{\today}
+
+\title[] %optional
+{EEG and MEG Data Preprocessing}
+
+\subtitle{Oral presentation}
+
+\author[Esteban Christiann, Alexi Canesse]{{Alexi \sc Canesse} and {Esteban \sc Christiann},\\ ENS Paris-Saclay, France}
+
+\institute[] % (optional)
+{
+    Project for the time series course\\
+    Part of the MVA program at ENS Paris-Saclay.\\
+}
+
+\date[Oral presentation] % (optional)
+{\today}
+
+% \logo{\includegraphics[height=1cm]{}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \pgfplotsset{every axis/.append style={
+%         scaled y ticks = false,
+%         scaled x ticks = false,
+%         y tick label style={/pgf/number format/.cd, fixed,
+%                             int detect,1000 sep={\;},precision=3},
+%         x tick label style={/pgf/number format/.cd, fixed, fixed zerofill,
+%                             int detect, 1000 sep={},precision=3}
+%     }
+% }
+
+
+\begin{document}
+% \addbibresource{pres.bib}
+
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\section[\color{white} Introduction]{Introduction}\label{sec:introduction}
+
+\begin{frame}{Introduction}
+
+\end{frame}
+
+\begin{frame}{Contributions}
+
+\end{frame}
+
+\section[\color{white} Methods]{Methods}\label{sec:methods}
+
+\begin{frame}{Robust detrending}
+
+\end{frame}
+
+\begin{frame}{Inpainting}
+
+\end{frame}
+
+\begin{frame}{Outlier detection}
+
+\end{frame}
+
+\begin{frame}{Robust rereferencing}
+
+\end{frame}
+
+\begin{frame}{Step removal}
+
+\end{frame}
+
+\begin{frame}{Ringing removal}
+
+\end{frame}
+
+\section[\color{white} Data]{Data}\label{sec:data}
+
+\begin{frame}{Data}
+
+\end{frame}
+
+\section[\color{white} Data]{Results}\label{sec:results}
+
+\begin{frame}{Results}
+
+\end{frame}
+
+
+\end{document}

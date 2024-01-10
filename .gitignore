@@ -19,3 +19,5 @@ data/phan*
 *.bbl
 data/MEG.npy
 6509115
+*.snm
+*.nav
