@@ -11,7 +11,7 @@
 % \usepackage{pifont}
 \usepackage{geometry}
 \usepackage{hyperref}
-\usepackage[table]{xcolor}
+% \usepackage[table]{xcolor}
 \usepackage{tikz}
 \usepackage{colortbl}
 % \usepackage{mathrsfs}
@@ -101,6 +101,21 @@
 }{
         \end{minted}%
 }
+
+\newenvironment{pseudocode}{
+    \VerbatimEnvironment
+    \begin{minted}[mathescape,
+        linenos,
+        numbersep=5pt,
+        gobble=2,
+        frame=lines,
+        escapeinside=||,
+        framesep=2mm,
+        rulecolor=magenta]{python}%
+}{
+    \end{minted}%
+}
+
 
 
 % \flushbottom
