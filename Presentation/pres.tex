@@ -116,7 +116,7 @@
 
   EEG and MEG data are prone to a lot of different artefacts such as steps, ringing, slow drift and glitches.
 
-  The article we studied introduces methods to preprocess EEG and MEG data.
+  The article we studied~\cite{DECHEVEIGNE2018}\footfullcite{DECHEVEIGNE2018}. introduces methods to preprocess EEG and MEG data.
 
   \begin{figure}
     \centering
@@ -131,7 +131,18 @@
 \end{frame}
 
 \begin{frame}{Contributions}
-
+    \begin{itemize}
+        \setlength{\itemsep}{20pt}
+        \item<1->{Existing implementation : matlab. Not used (because matlab\dots). Releasing code only in matlab is bad for reproducible science and should not be considered as a proper release.}
+        \item<2->{New implementation : python.}
+        \item<3->{Work repartition: \begin{itemize}
+            \item Esteban implemented painting, outlier detection and ringing removal.
+            \item Alexi implemented detrending, rereferencing, step removal.
+            \item The data has been gathered and exploited as a combined efforts.
+            \item The same goes for the experiments.
+            \item This report has been written by both students with an equal repartition.
+        \end{itemize}}
+    \end{itemize}
 \end{frame}
 
 \section[\color{white} Methods]{Methods}\label{sec:methods}
@@ -209,9 +220,11 @@
 \section[\color{white} Application]{Application : Reconstruction}\label{sec:results}
 
 \begin{frame}{Data}
-  4 min long MEG recording at 2400Hz with 303 channels\\$\implies 174'528'000$ samples
+    MEG Data we used : \textcite{Litvak2016}\footfullcite{Litvak2016}\\
+    Recordings of the data : \textcite{oswal2016analysis}\footfullcite{oswal2016analysis}\\
+    4 min long MEG recording at 2400Hz with 303 channels\\$\implies 174'528'000$ samples
 
-  We used only 16 channels because we have limited compute capabilities.
+    We used only 16 channels because we have limited compute capabilities.
 \end{frame}
 
 \begin{frame}{A complete pipeline for preprocessing}
