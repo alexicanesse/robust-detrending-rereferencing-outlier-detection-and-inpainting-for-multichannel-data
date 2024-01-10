@@ -124,129 +124,101 @@
 \section[\color{white} Methods]{Methods}\label{sec:methods}
 
 \begin{frame}{Robust detrending}
-  Usual detrending methods are sensible to artefacts.
+    Usual detrending methods are sensible to artefacts.
 
-  $\implies$ Robust detrending: estimate the trend ignoring outliers, and flag high errors as outliers for the next iteration
-
-% \begin{pseudocode}
-% detrending(signal):
-%     weights = [1, 1, |\(\dots\)|, 1] # weights for outlier detection (0 means outlier)
-%     iterrate |\(n_\text{iter}\)| times:
-%         projected_signal = fit_to_basis_using_weights(signal, weights)
-%         error_on_projection = abs(signal - projected_signal)
-%         for t in len(signal):
-%             if error_on_projection[t]/std(error_on_projection) > threshold:
-%                 weights[t] = 0
-%             else:
-%                 weights[t] = 1
-%     return signal - fitted_signal # detrended signal
-% \end{pseudocode}
+    $\implies$ Robust detrending: estimate the trend ignoring outliers, and flag high errors as outliers for the next iteration
+    \begin{figure}
+        \centering
+        \includegraphics[width=.8\textwidth]{figures/detrend_real.png}
+        \caption{Application of the detrending algorithm.}
+        \label{fig:data}
+    \end{figure}
 \end{frame}
 
 \begin{frame}{Inpainting}
+    Inpainting is the process of reconstructing the signal at timesteps affected by glitches. Here, we assume that glitches locations are known.
 
-  Inpainting is the process of reconstructing the signal at timesteps affected by glitches. Here, we assume that glitches locations are known.
-
-  This algorithm first estimates the linear relationship between channels and use it to reconstruct the signal.
-
-  % \begin{pseudocode}
-  %   inpaint(x, w):
-  %       N = Number of channels
-  %       for n in range(N):
-  %           Partition the time axis into |\(K\)| subsets based on validity of channels
-  %           for k in range(K):
-  %               T_k = timesteps in subset k
-  %               Tprime = subset of T_k where ch. n is valid
-  %               Tinpaint = subset of T_k where ch. n has to be reconstructed
-  %               Estimate the linear relationship between ch. n and valid ch. on Tprime
-  %               Use the relationship to reconstruct ch. n on Tinpaint
-  %       return new_x
-  %   \end{pseudocode}
-
+    This algorithm first estimates the linear relationship between channels and use it to reconstruct the signal.
+    \begin{figure}
+        \centering
+        \includegraphics[width=.7\textwidth]{figures/inpaint.png}
+        \caption{Application of the inpainting algorithm.}
+        \label{fig:data}
+    \end{figure}
 \end{frame}
 
 \begin{frame}{Outlier detection}
 
-  To flag outliers, we use the previous algorithm and flag poorly reconstructed values as outliers for the next iteration.
+    To flag outliers, we use the previous algorithm and flag poorly reconstructed values as outliers for the next iteration.
 
-% \begin{pseudocode}
-% outlier_detection(x, thres=2., maxiter=20):
-%     w = ones_like(x) # Initially assume there are no outliers
-%     for it in range(maxiter):
-%         xbar = inpaint(x, w) # Try to reconstruct the data
-%         d = np.abs(x - xbar)
-%         w = d < thres * d.std() # Flag high reconstruction errors as outliers
-%     return w
-% \end{pseudocode}
+    \begin{figure}
+        \centering
+        \includegraphics[width=.8\textwidth]{figures/outlier_detection.png}
+        \caption{Application of the outlier detection algorithm.}
+        \label{fig:data}
+    \end{figure}
 
 \end{frame}
 
 \begin{frame}{Robust rereferencing}
 
-% \begin{pseudocode}
-% rereferencing(signal):
-%     weights = 1 - outlier_detection(signal) # 1 : valid data / 0 : outlier
-%     weighted_mean = mean_using_weights(signal, weights)
-%     return signal - weighted_mean
-% \end{pseudocode}
+    \begin{figure}
+        \centering
+        \includegraphics[width=.8\textwidth]{figures/rereferencing.png}
+        \caption{Application of the robust rereferencing algorithm.}
+        \label{fig:data}
+    \end{figure}
 
 \end{frame}
 
 \begin{frame}{Step removal}
 
-%   \begin{pseudocode}
-% # Recursively look for steps in the signal
-% step_detection(signal, depth)
-%     |\(\forall (t,T)\)| M[t][T] = mean(x[t:T+1])
-%     |\(\forall (t,T)\)| V[t][T] = |\(\sum_{i=t}^T (x_i - M_t^T)^2\)|
-    
-%     t0 = argmin(V[1][t] + V[t][T], t) # most likely position to be a step
-%     if not(is_step(signal, t0)): # Check if t0 is indeed the position of a step
-%         return [] # no steps
-    
-%     # Check for steps on both sides of t0
-%     steps_left = step_detection(signal[:t0], depth - 1)
-%     steps_right = t0 + step_detection(signal[t0:], depth - 1) # + t0 because signal si shifted
-
-%     return concatenate(steps_left, [t0], steps_right)
-
-% step_removal(signal, depth):
-%     steps = step_detection(signal, depth)
-
-%     for step in steps:
-%         signal[steps:] -= difference_mean_before_and_after_step(signal, step)
-
-%     return signal # Without steps
-
-% \end{pseudocode}
-
+    \begin{figure}
+        \centering
+        \includegraphics[width=.8\textwidth]{figures/step_removal_real.png}
+        \caption{Application of the step removal algorithm.}
+        \label{fig:data}
+    \end{figure}
 \end{frame}
 
 \begin{frame}{Ringing removal}
 
-  Ringing artefacts are caused by the antialiasing filter. First, we estimate the parameters of this filter to model its impulse response and cancel it, which removes ringing artefacts.
-
-%   \begin{pseudocode}
-% ringing_removal(x, step_list):
-%     for n in range(number of channels):
-%         for step in step_list[n]:
-%             Estimate filter parameters on x[step : step + 100, n]
-%             imp_res = impulse response of the filter
-%             x[step : step+100, n] -= imp_res
-% \end{pseudocode}
-
+    Ringing artefacts are caused by the antialiasing filter. First, we estimate the parameters of this filter to model its impulse response and cancel it, which removes ringing artefacts.
+    \begin{figure}
+        \centering
+        \includegraphics[width=.4\textwidth]{figures/ringing_removal_real.png}
+        \includegraphics[width=.4\textwidth]{figures/ringin_removal_zoom.png}
+        \caption{Left: A full signal. Right: zoom on an artefact}
+        \label{fig:data}
+    \end{figure}
 \end{frame}
 
-\section[\color{white} Data]{Data}\label{sec:data}
+
+\section[\color{white} Application]{Application : Reconstruction}\label{sec:results}
 
 \begin{frame}{Data}
 
 \end{frame}
 
-\section[\color{white} Data]{Results}\label{sec:results}
+\begin{frame}{A complete pipeline for preprocessing}
+    Remove steps \(\to\) Remove ringing artefacts \(\to\) Robust detrend \(\to\) Detect outliers \(\to\) Inpainting \(\to\) Robust rereference.
+    \begin{figure}
+        \centering
+        \includegraphics[width=.4\textwidth]{figures/data_raw.png}
+        \includegraphics[width=.4\textwidth]{figures/data_clean.png}
+        \caption{Left: Raw MEG data. Right: Cleaned MEG data}
+        \label{fig:data}
+    \end{figure}
+\end{frame}
 
 \begin{frame}{Results}
-
+    \begin{figure}
+        \centering
+        \includegraphics[width=.65\textwidth]{figures/recons}\\
+        \includegraphics[width=.65\textwidth]{figures/recons_clean}
+        \caption{Top: Raw MEG and its reconstruction. Bottom: Cleaned MEG with its reconstruction}
+        \label{fig:recons}
+    \end{figure}
 \end{frame}
 
 
