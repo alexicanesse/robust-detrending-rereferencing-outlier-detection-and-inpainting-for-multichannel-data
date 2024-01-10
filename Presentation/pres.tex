@@ -114,6 +114,20 @@
 
 \begin{frame}{Introduction}
 
+  EEG and MEG data are prone to a lot of different artefacts such as steps, ringing, slow drift and glitches.
+
+  The article we studied introduces methods to preprocess EEG and MEG data.
+
+  \begin{figure}
+    \centering
+    \includegraphics[width=.3\textwidth]{figures/steps_exemple}
+    \hfill
+    \includegraphics[width=.3\textwidth]{figures/trend_exemple}
+    \hfill
+    \includegraphics[width=.3\textwidth]{figures/ringing_exemple.png}
+    \caption{MEG steps on the left, trend on the middle and ringing on the right.}
+\end{figure}
+
 \end{frame}
 
 \begin{frame}{Contributions}
@@ -171,7 +185,6 @@
 \end{frame}
 
 \begin{frame}{Step removal}
-
     \begin{figure}
         \centering
         \includegraphics[width=.8\textwidth]{figures/step_removal_real.png}
@@ -196,17 +209,17 @@
 \section[\color{white} Application]{Application : Reconstruction}\label{sec:results}
 
 \begin{frame}{Data}
-    The article we studied~\textcite{DECHEVEIGNE2018}\footfullcite{DECHEVEIGNE2018}.
+  4 min long MEG recording at 2400Hz with 303 channels\\$\implies 174'528'000$ samples
 
-
+  We used only 16 channels because we have limited compute capabilities.
 \end{frame}
 
 \begin{frame}{A complete pipeline for preprocessing}
     Remove steps \(\to\) Remove ringing artefacts \(\to\) Robust detrend \(\to\) Detect outliers \(\to\) Inpainting \(\to\) Robust rereference.
     \begin{figure}
         \centering
-        \includegraphics[width=.4\textwidth]{figures/data_raw.png}
-        \includegraphics[width=.4\textwidth]{figures/data_clean.png}
+        \includegraphics[width=.45\textwidth]{figures/data_raw.png}
+        \includegraphics[width=.45\textwidth]{figures/data_clean.png}
         \caption{Left: Raw MEG data. Right: Cleaned MEG data}
         \label{fig:data}
     \end{figure}
@@ -215,8 +228,8 @@
 \begin{frame}{Results}
     \begin{figure}
         \centering
-        \includegraphics[width=.65\textwidth]{figures/recons}\\
-        \includegraphics[width=.65\textwidth]{figures/recons_clean}
+        \includegraphics[width=.77\textwidth]{figures/recons}\\
+        \includegraphics[width=.77\textwidth]{figures/recons_clean}
         \caption{Top: Raw MEG and its reconstruction. Bottom: Cleaned MEG with its reconstruction}
         \label{fig:recons}
     \end{figure}
