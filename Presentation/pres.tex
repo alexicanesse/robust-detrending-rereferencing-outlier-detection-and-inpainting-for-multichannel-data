@@ -1,12 +1,11 @@
 \documentclass[10pt,serif]{beamer}
 \input{preambule_pres.tex}
-
 \usepackage{subcaption}
 
 \def\bibfont{\footnotesize}
 % \renewcommand\bibliographytypesize{\small}
 {\footnotesize
-\bibliography{./report.bib}}
+\bibliography{../Report/main.bib}}
 \usepackage{wrapfig}
 \usepackage{ragged2e}
 \usepackage{tabularx}
@@ -197,6 +196,8 @@
 \section[\color{white} Application]{Application : Reconstruction}\label{sec:results}
 
 \begin{frame}{Data}
+    The article we studied~\textcite{DECHEVEIGNE2018}\footfullcite{DECHEVEIGNE2018}.
+
 
 \end{frame}
 
@@ -221,5 +222,9 @@
     \end{figure}
 \end{frame}
 
+\begin{frame}[allowframebreaks]
+    \frametitle{References}
+    \printbibliography
+\end{frame}
 
 \end{document}
